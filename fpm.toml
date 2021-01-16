@@ -1,0 +1,19 @@
+name = "fnote"
+version = "0.1.0"
+license = "MIT"
+author = "Arttu Räsänen"
+maintainer = "arttu.rasanen@protonmail.com"
+copyright = "2021 Arttu Räsänen"
+
+
+[library]
+source-dir="src"
+
+[dependencies]
+# jsonff = { git = "https://gitlab.com/everythingfunctional/jsonff.git" }
+
+[[executable]]
+name="fnote"
+source-dir="app"
+main="main.f90"
+
