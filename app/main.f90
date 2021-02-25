@@ -1,3 +1,9 @@
+! 
+! FNote: Command-line notebook application
+! Module: Main program, with helper procedures for command-line argument
+!         handling.
+! 
+
 program main
     use fnote
     use note_mod
@@ -22,15 +28,14 @@ program main
     
     arg_num = command_argument_count() 
     
-    ! Get command
+    ! Get command-line argument, result --> arg_txt.
     call get_arg(1, arg_txt)
     
-    ! Check command
+    ! Read argument string for command.
     cmdcode = parse_cmd(arg_num, arg_txt)
-    
     call dealloc_arg(arg_txt)
     
-    ! Execute operation
+    ! Execute operation.
     select case (cmdcode)
     case (NEWNOTE)
         call get_arg(2, arg_txt)
@@ -50,7 +55,6 @@ program main
         if (rstat == 0) then
             call remove_note(note_num)
         else
-            !print *, 
             call usage('invalid ID number: "' // arg_txt // '".')
         end if
         
@@ -65,6 +69,13 @@ program main
     
 contains
     
+    !  
+    !  name: parse_cmd
+    !  desc: Helper function for parsing command-line argument.
+    !  @param numargs: number of cmd-line arguments.
+    !  @param str: cmd-line parameters as a character string. 
+    !  @return: the command code as an integer number.
+    !  
     function parse_cmd(numargs, str) result(cmdcode)
         integer, intent(in) :: numargs
         character(len=:), allocatable, intent(inout) :: str
@@ -86,6 +97,14 @@ contains
         end if
     end function
     
+    
+    !  
+    !  name: get_arg
+    !  desc: Reads the n'th cmd-line argument from the environment and 
+    !        puts it into the "str" output argument.
+    !  @param n: number of argument to read. Range 1..num of args.
+    !  @param str: the corresponding argument is placed here.
+    !  
     subroutine get_arg(n, str)
         integer, intent(in) :: n
         character(len=:), allocatable, intent(out) :: str
@@ -101,6 +120,12 @@ contains
         end if
     end subroutine
     
+    
+    !  
+    !  name: dealloc_arg
+    !  desc: Helper subroutine for deallocating a character string.
+    !  @param str: character string to de-allocate.
+    !  
     subroutine dealloc_arg(str)
         character(len=:), allocatable, intent(inout) :: str
         if (allocated(str)) then
@@ -108,6 +133,12 @@ contains
         end if
     end subroutine
     
+    
+    !  
+    !  name: usage
+    !  desc: Helper subroutine for displaying a brief help message.
+    !  @param str: optional text message to show to the user.
+    !  
     subroutine usage(str)
         character(len=*), intent(in), optional :: str
         if ( present(str) ) then
