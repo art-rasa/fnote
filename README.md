@@ -25,14 +25,13 @@ This program has very few features, and as such is simple to use. The following 
 
 ## Bugs, limitations
 
-0. Currently the program creates a new note storage file in any directory it gets called. There's no single location for the file.
 1. When creating a new note, the note text must be enclosed by quotation marks. Otherwise only the first word of the note text would get saved.
 2. Probably more!
 
 ## Possible/planned future features
 
 0. Storing date & time information for notes (creation, deadline, etc...).
-1. Storing "finished/unfinished" or "to do/doing/ready" flags might be beneficial for certain types of notes. Then the program could, for example, produce a listing of all notes that have the "unfinished" flag set, or are nearing their deadline.
+1. Storing "finished/unfinished" or "to do/doing/ready" flags might be beneficial for certain types of notes.
 2. Use more modern Object-Oriented programming idioms & constructs.
 3. Consider using structured text format (XML or JSON with accompanying library) for note storage.
 
