@@ -9,7 +9,9 @@ module fnote
     implicit none
     
     ! Filename, where to store notes.
-    character(len=*), parameter :: FILENAME = 'fnote.txt'
+    character(len=*), parameter :: FILENAME = '.fnote.txt'
+    ! Full path to the note storage file.
+    character(len=:), allocatable :: filepath
     
     ! Note storage & helper variable for number of notes.
     integer :: num_notes
@@ -35,21 +37,20 @@ contains
         lowest = 9999
         highest = 1
         
-        ! Error in note storage.
+        ! Note storage is empty.
         if (.not. allocated(notes)) then
-            available_id = -1
             return
         end if
         
-        ! Find lowest & highest ID, it is the ID search space.
+        ! Finding the lowest & highest occupied IDs.
         call find_min_max_idnums(lowest, highest)
         searchspace = highest - lowest
         
-        ! Easy case; use lowest-1 as ID:
+        ! Easy case; the lowest-1 is used as ID:
         if (lowest > 1) then
             available_id = lowest - 1
         
-        ! Find the lowest unoccupied ID between low & high:
+        ! Finding the lowest unoccupied ID between low & high:
         else if (searchspace > 1) then
             do idnum = lowest + 1, highest - 1
                 if ( is_idnum_free(idnum) ) then
@@ -182,26 +183,43 @@ contains
         integer :: unum
         integer :: fstat
         logical :: fexists
+        character(len=255) :: tmp
+        
+        ! Finding the home directory
+        call get_environment_variable("HOME", tmp)
+        
+        if (len_trim(tmp) < 2) then
+            print *, 'open_file(): home directory not found.'
+            stop 1
+        end if
+        
+        filepath = trim(tmp) // '/' // FILENAME
+        print *, 'file path: ', filepath
         
         fstat = 0
-        fexists = file_exists(FILENAME)
+        fexists = file_exists(filepath)
         
         select case (mode)
         case ('w')
-            open(newunit=unum, file=FILENAME, status='replace', iostat=fstat)
+            open(newunit=unum, file=filepath, status='replace', &
+                 iostat=fstat)
             
         case ('r')
             if (fexists) then
-                open(newunit=unum, file=FILENAME, status='old', iostat=fstat)
+                open(newunit=unum, file=filepath, status='old', &
+                     iostat=fstat)
             else
-                open(newunit=unum, file=FILENAME, status='new', iostat=fstat)
+                open(newunit=unum, file=filepath, status='new', &
+                     iostat=fstat)
             end if
             
         case ('a')
             if (fexists) then
-                open(newunit=unum, file=FILENAME, status='old', iostat=fstat, position='append')
+                open(newunit=unum, file=filepath, status='old', &
+                     iostat=fstat, position='append')
             else
-                open(newunit=unum, file=FILENAME, status='new', iostat=fstat)
+                open(newunit=unum, file=filepath, status='new', &
+                     iostat=fstat)
             end if
             
         case default
@@ -238,7 +256,7 @@ contains
         type(note_t), intent(in) :: note
         integer :: fstat
         character(len=:), allocatable :: msg
-        
+        print* , 'unum:',unum,'note id:',note%id_num, 'note msg:', note%msg
         if ( allocated(note%msg) .and. (note%id_num > 0) ) then
             ! Call a type-bound procedure.
             msg = note % serialize()
