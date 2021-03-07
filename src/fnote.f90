@@ -194,7 +194,6 @@ contains
         end if
         
         filepath = trim(tmp) // '/' // FILENAME
-        print *, 'file path: ', filepath
         
         fstat = 0
         fexists = file_exists(filepath)
@@ -256,7 +255,7 @@ contains
         type(note_t), intent(in) :: note
         integer :: fstat
         character(len=:), allocatable :: msg
-        print* , 'unum:',unum,'note id:',note%id_num, 'note msg:', note%msg
+        
         if ( allocated(note%msg) .and. (note%id_num > 0) ) then
             ! Call a type-bound procedure.
             msg = note % serialize()

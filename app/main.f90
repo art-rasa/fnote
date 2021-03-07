@@ -25,7 +25,7 @@ program main
     unum = open_file('r')
     call read_notes(unum)
     call close_file(unum)
-    print *, 'file unit: ', unum
+    
     arg_num = command_argument_count() 
     
     ! Get command-line argument, result --> arg_txt.
