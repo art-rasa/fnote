@@ -5,6 +5,7 @@
 ! 
 
 module note_mod
+    use str_utils
     implicit none
     
     type :: note_t
@@ -65,6 +66,7 @@ contains
         character(len=10) :: tmp
         character(len=:), allocatable :: rs
         integer :: str_len
+        character, parameter :: newline_char = new_line('a')
         
         write(tmp, '(i0)') this % id_num
         
@@ -75,6 +77,9 @@ contains
         else
             rs = '-1|(invalid string)'
         end if
+        
+        ! Any line breaks are replaced by a space.
+        call replace_chars(rs, newline_char, ' ')
     end function
     
     
